@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 !.env.example
+/src/generated/prisma
+# AI-assistant skill files (not part of the app)
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
