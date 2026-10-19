@@ -46,3 +46,6 @@ next-env.d.ts
 .claude/
 .windsurf/
 skills-lock.json
+
+# uploaded files (private, never committed)
+/storage
