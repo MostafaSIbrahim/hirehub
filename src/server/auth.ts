@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { prisma } from "./db";
+import { APIError } from "better-auth/api";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
@@ -24,6 +25,23 @@ export const auth = betterAuth({
         required: false,
         defaultValue: "ACTIVE",
         input: false,
+      },
+    },
+  },
+    databaseHooks: {
+    session: {
+      create: {
+        // Runs every time Better Auth is about to create a session (i.e. every login).
+        before: async (session) => {
+          const user = await prisma.user.findUnique({
+            where: { id: session.userId },
+            select: { status: true },
+          });
+          if (user?.status === "SUSPENDED") {
+            throw new APIError("FORBIDDEN", { message: "Your account has been suspended." });
+          }
+          return { data: session };
+        },
       },
     },
   },
