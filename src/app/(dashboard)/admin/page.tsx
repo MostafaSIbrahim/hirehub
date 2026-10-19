@@ -1,3 +1,5 @@
+import { PageHeader } from "@/components/shared/page-header";
+
 export default function AdminDashboard() {
-  return <h1 className="text-2xl font-semibold">Admin dashboard</h1>;
+  return <PageHeader title="Dashboard" description="Your Admin Dashboard at a glance." />;
 }
