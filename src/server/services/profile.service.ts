@@ -4,6 +4,7 @@ import { prisma } from "@/server/db";
 import { saveFile } from "@/server/storage";
 import type { SeekerProfileInput } from "@/lib/validators/profile";
 
+
 const emptyToNull = (s: string) => (s.trim() === "" ? null : s.trim());
 
 /** "React, typescript,react , Next.js" → ["React", "typescript", "Next.js"] */
@@ -62,9 +63,10 @@ export async function saveResume(userId: string, bytes: Uint8Array): Promise<str
 /** Who may download a CV: its owner, an employer the seeker applied to, or an admin. */
 export async function canViewResume(user: { id: string; role?: string | null }, url: string) {
   if (user.role === "ADMIN") return true;
-  const [ownProfile, applicationToMyCompany] = await Promise.all([
+  const [ownProfile, ownApplication, applicationToMyCompany] = await Promise.all([
     prisma.seekerProfile.count({ where: { userId: user.id, resumeUrl: url } }),
+    prisma.application.count({ where: { seekerId: user.id, resumeUrl: url } }),
     prisma.application.count({ where: { resumeUrl: url, job: { company: { ownerId: user.id } } } }),
   ]);
-  return ownProfile > 0 || applicationToMyCompany > 0;
+  return ownProfile > 0 || ownApplication > 0 || applicationToMyCompany > 0;
 }

@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatSalary, timeAgo } from "@/lib/format";
 import { EMPLOYMENT_TYPE_LABELS, EXPERIENCE_LEVEL_LABELS, WORK_MODE_LABELS } from "@/lib/jobs";
 import { getPublicJob } from "@/server/services/job.service";
+import { ApplySection } from "./apply-section";
 
 type Params = Promise<{ slug: string }>;
 
@@ -87,12 +88,9 @@ async function JobDetail({ params }: { params: Params }) {
       <aside className="space-y-6">
         <Card>
           <CardContent className="space-y-3 p-6">
-            {closed ? (
-              <Button className="w-full" disabled>Applications closed</Button>
-            ) : (
-              /* M3 replaces this with the real Apply dialog */
-              <Button asChild className="w-full"><Link href="/login">Log in to apply</Link></Button>
-            )}
+            <Suspense fallback={<Button className="w-full" disabled>Apply now</Button>}>
+              <ApplySection jobId={job.id} jobTitle={job.title} closed={closed} />
+            </Suspense>
           </CardContent>
         </Card>
 

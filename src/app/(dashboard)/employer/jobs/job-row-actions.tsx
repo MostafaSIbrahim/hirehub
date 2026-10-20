@@ -20,6 +20,9 @@ export function JobRowActions({ job }: { job: { id: string; slug: string; status
   return (
     <div className="flex justify-end gap-1">
       {job.status !== "DRAFT" && (
+        <Button asChild variant="ghost" size="sm"><Link href={`/employer/jobs/${job.id}/applicants`}>Applicants</Link></Button>
+      )}
+      {job.status !== "DRAFT" && (
         <Button asChild variant="ghost" size="sm"><Link href={`/jobs/${job.slug}`}>View</Link></Button>
       )}
       <Button asChild variant="ghost" size="sm"><Link href={`/employer/jobs/${job.id}/edit`}>Edit</Link></Button>
