@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { dashboardPath } from "@/lib/roles";
 import { getSession } from "@/server/session";
+import { LogoutButton } from "@/components/shared/logout-button";
 
 function GuestButtons() {
   return (
@@ -16,7 +17,17 @@ function GuestButtons() {
 async function AccountButtons() {
   const session = await getSession();
   if (!session) return <GuestButtons />;
-  return <Button asChild size="sm"><Link href={dashboardPath(session.user.role)}>Dashboard</Link></Button>;
+  return (
+    <>
+      {session.user.role === "SEEKER" && (
+        <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+          <Link href="/seeker/applications">My applications</Link>
+        </Button>
+      )}
+      <Button asChild size="sm"><Link href={dashboardPath(session.user.role)}>Dashboard</Link></Button>
+      <LogoutButton />
+    </>
+  );
 }
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {

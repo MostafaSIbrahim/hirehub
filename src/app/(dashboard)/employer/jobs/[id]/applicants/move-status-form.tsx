@@ -26,7 +26,7 @@ export function MoveStatusForm({ applicationId, status }: { applicationId: strin
         startTransition(async () => {
           const result = await moveApplicationAction(applicationId, to, note);
           if ("error" in result) return void toast.error(result.error);
-          toast.success(`Moved to ${formatStatus(to)}`);
+          toast.success(to === "HIRED" ? "Hired! If the role is now filled, close the job in My jobs." : `Moved to ${formatStatus(to)}`);
           setNote("");
           router.refresh();
         });

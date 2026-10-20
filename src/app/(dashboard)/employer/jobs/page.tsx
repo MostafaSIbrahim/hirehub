@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { listMyJobs } from "@/server/services/job.service";
 import { requireRole } from "@/server/session";
 import { JobRowActions } from "./job-row-actions";
+import { Badge } from "@/components/ui/badge";
 
 const TABS: { label: string; status?: JobStatus }[] = [
   { label: "All" }, { label: "Published", status: "PUBLISHED" }, { label: "Drafts", status: "DRAFT" }, { label: "Closed", status: "CLOSED" },
@@ -67,7 +68,12 @@ export default async function MyJobsPage({ searchParams }: { searchParams: Promi
             <TableBody>
               {items.map((job) => (
                 <TableRow key={job.id}>
-                  <TableCell className="max-w-64 truncate font-medium">{job.title}</TableCell>
+                  <TableCell className="max-w-64 font-medium">
+                    <span className="truncate">{job.title}</span>
+                    {job.hires > 0 && (
+                      <Badge variant="outline" className="ml-2 border-transparent bg-success/15 text-success">{job.hires} hired</Badge>
+                    )}
+                  </TableCell>
                   <TableCell><StatusBadge status={job.status} /></TableCell>
                   <TableCell className="text-right tabular-nums">{job._count.applications}</TableCell>
                   <TableCell className="whitespace-nowrap text-muted-foreground">{job.publishedAt ? timeAgo(job.publishedAt) : "Not published"}</TableCell>

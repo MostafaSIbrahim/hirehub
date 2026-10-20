@@ -56,7 +56,20 @@ export async function listMyJobs(ownerId: string, opts: { status?: JobStatus; pa
     prisma.job.groupBy({ by: ["status"], where: { company: { ownerId } }, _count: { _all: true } }),
   ]);
   const counts = Object.fromEntries(byStatus.map((r) => [r.status, r._count._all])) as Partial<Record<JobStatus, number>>;
-  return { items, total, totalPages: Math.max(1, Math.ceil(total / JOBS_PAGE_SIZE)), counts };
+    // How many people were hired per job on this page (one query for all 10 rows, not 10 queries)
+  const hired = await prisma.application.groupBy({
+    by: ["jobId"],
+    where: { jobId: { in: items.map((j) => j.id) }, status: "HIRED" },
+    _count: { _all: true },
+  });
+  const hiresByJob = new Map(hired.map((r) => [r.jobId, r._count._all]));
+
+  return {
+    items: items.map((j) => ({ ...j, hires: hiresByJob.get(j.id) ?? 0 })),
+    total,
+    totalPages: Math.max(1, Math.ceil(total / JOBS_PAGE_SIZE)),
+    counts,
+  };
 }
 
 /** Public job page. cache() → generateMetadata and the page share ONE query per request. */

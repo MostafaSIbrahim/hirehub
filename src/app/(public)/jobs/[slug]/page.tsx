@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
+
 import { notFound } from "next/navigation";
 import { BadgeCheck, Banknote, Briefcase, Clock, Globe, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
