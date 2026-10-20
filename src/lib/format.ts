@@ -11,3 +11,11 @@ export function timeAgo(date: Date): string {
   }
   return "just now";
 }
+
+export function formatSalary(min: number | null, max: number | null, currency: string): string | null {
+  const f = new Intl.NumberFormat("en", { style: "currency", currency, maximumFractionDigits: 0 });
+  if (min != null && max != null) return `${f.format(min)} – ${f.format(max)} / month`;
+  if (min != null) return `From ${f.format(min)} / month`;
+  if (max != null) return `Up to ${f.format(max)} / month`;
+  return null;
+}

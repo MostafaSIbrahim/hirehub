@@ -10,6 +10,10 @@ const STYLES: Record<string, string> = {
   HIRED: "bg-success/15 text-success",
   REJECTED: "bg-destructive/10 text-destructive",
   WITHDRAWN: "bg-muted text-muted-foreground line-through",
+  DRAFT: "bg-muted text-muted-foreground",
+  PUBLISHED: "bg-success/15 text-success",
+  CLOSED: "bg-secondary text-secondary-foreground",
+  REMOVED: "bg-destructive/10 text-destructive",
 };
 
 export function StatusBadge({ status }: { status: string }) {
