@@ -138,3 +138,16 @@ export async function deleteDraftJob(ownerId: string, jobId: string) {
   const result = await prisma.job.deleteMany({ where: { ...ownedBy(ownerId, jobId), status: "DRAFT" } });
   if (result.count === 0) throw new AppError("Only your draft jobs can be deleted.");
 }
+
+export function listSavedJobs(userId: string) {
+  return prisma.savedJob.findMany({
+    // only jobs that are still live: removed/closed/draft would just lead to a 404
+    where: { userId, job: { status: "PUBLISHED" } },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+    select: {
+      createdAt: true,
+      job: { select: { id: true, slug: true, title: true, location: true, company: { select: { name: true } } } },
+    },
+  });
+}

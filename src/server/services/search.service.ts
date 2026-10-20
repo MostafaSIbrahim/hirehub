@@ -67,3 +67,25 @@ export async function searchJobs(f: JobSearch) {
 }
 
 export type JobCardData = Awaited<ReturnType<typeof searchJobs>>["items"][number];
+
+import { cacheLife } from "next/cache";
+
+/** Same for every visitor → cached, refreshed every few minutes. */
+export async function getPlatformStats() {
+  "use cache";
+  cacheLife("minutes");
+  const [jobs, companies, seekers, hires] = await Promise.all([
+    prisma.job.count({ where: { status: "PUBLISHED" } }),
+    prisma.company.count(),
+    prisma.user.count({ where: { role: "SEEKER", status: "ACTIVE" } }),
+    prisma.application.count({ where: { status: "HIRED" } }),
+  ]);
+  return { jobs, companies, seekers, hires };
+}
+
+export async function getLatestJobs() {
+  "use cache";
+  cacheLife("minutes");
+  const { items } = await searchJobs({});
+  return items.slice(0, 6);
+}

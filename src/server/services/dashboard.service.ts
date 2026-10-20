@@ -12,7 +12,7 @@ export async function getSeekerDashboard(userId: string) {
       where: { seekerId: userId },
       _count: { _all: true },
     }),
-    prisma.savedJob.count({ where: { userId } }),
+    prisma.savedJob.count({ where: { userId, job: { status: "PUBLISHED" } } }),
     prisma.application.findMany({
       where: { seekerId: userId },
       orderBy: { createdAt: "desc" },
