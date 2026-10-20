@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { JobCard } from "@/components/shared/job-card";
 import { getLatestJobs, getPlatformStats } from "@/server/services/search.service";
+import { cacheLife } from "next/cache";
 
 export const metadata = {
   title: "HireHub · Find your next job or your next hire",
@@ -44,8 +45,8 @@ function Hero() {
   return (
     <section className="relative overflow-hidden rounded-3xl border bg-card px-6 py-16 text-center sm:px-12 sm:py-24">
       {/* Soft brand-colored glows: decorative only, hidden from screen readers */}
-      <div aria-hidden className="pointer-events-none absolute -top-40 left-1/4 size-[28rem] rounded-full bg-primary/15 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-40 right-1/4 size-[28rem] rounded-full bg-highlight/15 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -top-40 left-1/4 size-112 rounded-full bg-primary/15 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-40 right-1/4 size-112 rounded-full bg-highlight/15 blur-3xl" />
 
       <div className="relative mx-auto max-w-2xl space-y-6">
         <p className="inline-flex items-center gap-2 rounded-full border bg-background/70 px-3 py-1 text-xs text-muted-foreground">
@@ -128,6 +129,8 @@ function LatestJobsSection() {
 }
 
 async function LatestJobs() {
+  "use cache";
+  cacheLife("minutes"); // "posted 2 days ago" is recomputed whenever this refreshes
   const jobs = await getLatestJobs();
   if (jobs.length === 0) return <p className="text-muted-foreground">New jobs are on their way. Check back soon.</p>;
   return (

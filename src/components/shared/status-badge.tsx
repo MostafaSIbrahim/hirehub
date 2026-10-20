@@ -14,6 +14,8 @@ const STYLES: Record<string, string> = {
   PUBLISHED: "bg-success/15 text-success",
   CLOSED: "bg-secondary text-secondary-foreground",
   REMOVED: "bg-destructive/10 text-destructive",
+  sACTIVE: "bg-success/15 text-success",
+  SUSPENDED: "bg-destructive/10 text-destructive",
 };
 
 export function StatusBadge({ status }: { status: string }) {
