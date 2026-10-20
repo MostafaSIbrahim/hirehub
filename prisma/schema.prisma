@@ -188,9 +188,10 @@ model Job {
   savedBy         SavedJob[]
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
-
+  search          Unsupported("tsvector")? @default(dbgenerated())
   @@index([status, publishedAt])
   @@index([companyId, status])
+  @@index([search], type: Gin)
 }
 
 model Application {
